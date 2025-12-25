@@ -1,20 +1,28 @@
+# main.py
 from black_rainbow import BlackRainbow, Page
-
-import time
+from black_rainbow.ui import Menu, Text, MenuItem
 
 app = BlackRainbow()
 
-
 @app.register_page("/")
-def main_page():
-
-
-
+def main_page(navigator):
     return Page(
-        header="Header for main",
-        caption=f"Caaaaaption"
+        Text("Главное меню"),
+        Menu(choices=[
+            MenuItem("Профиль", lambda: navigator.navigate("/profile")),
+            MenuItem("Настройки", lambda: navigator.navigate("/settings")),
+            MenuItem("Выход", lambda: exit()),
+        ])
     )
 
+@app.register_page("/profile")
+def profile_page():
+    return Page(Text("Профиль"))
+
+@app.register_page("/settings")
+def settings_page():
+    return Page(Text("Настройки"))
 
 if __name__ == "__main__":
     app.run()
+

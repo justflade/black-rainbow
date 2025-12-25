@@ -1,1 +1,1 @@
-from .black_rainbow import BlackRainbow, Page
+from .core import BlackRainbow, Page, Navigator
