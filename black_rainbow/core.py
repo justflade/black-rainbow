@@ -1,5 +1,7 @@
 from typing import Dict, Callable
-import inspect
+import inspect, os
+
+from .utils import wait_for_key
 
 
 class BlackRainbow:
@@ -15,16 +17,17 @@ class BlackRainbow:
     def register_page(self, path: str):
         def decorator(func):
             self._page_functions[path] = func
+
         return decorator
-    
+
     def render_page(self, page_function) -> Page:
         sig = inspect.signature(page_function)
         kwargs = {}
 
         if "storage" in sig.parameters:
             kwargs["storage"] = self._storage
-        
-        if "navigator" in sig.parameters    :
+
+        if "navigator" in sig.parameters:
             kwargs["navigator"] = self._navigator
 
         page = page_function(**kwargs)
@@ -38,11 +41,11 @@ class BlackRainbow:
             rendered_page = self.render_page(page_function)
 
             try:
-                user_input = input("> ")
+                user_input = wait_for_key()
             except (KeyboardInterrupt, EOFError):
                 print("\nВыход...")
                 break
-            
+
             actions = []
             for component in rendered_page._components:
                 result = component.handle_input(user_input, self._state_registry)
@@ -52,19 +55,22 @@ class BlackRainbow:
             print("Текущие реестр: ", self._state_registry)
             for action in actions:
                 action()
-            
+
 
 class Page:
     def __init__(self, *components):
         self._components = components
 
     def render(self, state_registry: dict):
-        print('----------------')
+        os.system("cls" if os.name == "nt" else "clear")
+
+        print("----------------")
         for component in self._components:
             output = component.render(state_registry)
             if output:
                 print(output)
-        print('----------------')
+        print("----------------")
+
 
 class Navigator:
     def __init__(self, app):
@@ -79,7 +85,3 @@ class Navigator:
         if len(self._app._history) > 1:
             self._app._history.pop()
             self._app._current_path = self._app._history[-1]
-
-    def root(self):
-        self._app._history = ["/"]
-        self._app._current_path = "/"

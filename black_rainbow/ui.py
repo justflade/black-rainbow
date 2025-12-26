@@ -5,41 +5,41 @@ import uuid
 
 class _Component:
     def __init__(self, key: str = None):
-        if key:
-            self._key = key
-        else:
-            # Временный фикс: хэш от текста (только для Text/Menu с одинаковым содержимым!)
-            content = getattr(self, 'text', '') + str(getattr(self, 'choices', ''))
-            self._key = str(hash(content))
+        self._key = key
 
     def render(self, state_registry: dict) -> str:
         raise NotImplementedError
-    
-    def handle_input(self, user_input: str, state_registry) -> Optional[Callable[..., Any]]:
+
+    def handle_input(
+        self, user_input: str, state_registry
+    ) -> Optional[Callable[..., Any]]:
         """Обрабатывает ввод. Возвращает действие (callable) или None."""
         return None
-    
+
     def _get_state(self, state_registry: dict) -> dict:
         key = self._key
         if key not in state_registry:
             state_registry[key] = {}
         return state_registry[key]
 
+
 class Text(_Component):
-    def __init__(self, text: str, key: str = None):
-        super().__init__(key)
+    def __init__(self, text: str):
+        super().__init__()
         self.text = text
 
     def render(self, state_registry) -> str:
         return self.text
 
-class MenuItem():
+
+class MenuItem:
     def __init__(self, text: str, action: Callable):
         self.text = text
         self.action = action
 
+
 class Menu(_Component):
-    def __init__(self, choices, key=None):
+    def __init__(self, choices, key):
         super().__init__(key)
         self.choices = choices
 
