@@ -32,10 +32,10 @@ def _wait_for_key_windows():
 
 def _map_special_key_windows(code):
     mapping = {
-        b"H": "up",
-        b"P": "down",
-        b"K": "left",
-        b"M": "right",
+        b"H": "w",
+        b"P": "s",
+        b"K": "a",
+        b"M": "d",
     }
     return mapping.get(code, "unknown")
 
@@ -72,9 +72,9 @@ def _wait_for_key_unix():
 
 def _map_arrow_key(ch):
     mapping = {
-        "A": "up",
-        "B": "down",
-        "C": "right",
-        "D": "left",
+        "A": "w",
+        "B": "s",
+        "C": "d",
+        "D": "a",
     }
     return mapping.get(ch, "unknown")
