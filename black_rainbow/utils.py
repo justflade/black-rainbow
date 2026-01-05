@@ -4,77 +4,96 @@ import os
 
 def wait_for_key():
     """
-    Ждет нажатия одной клавиши и возвращает её в унифицированном виде.
-    Поддерживает стрелки, w/s/a/d и Ctrl+C.
-    Кроссплатформенно: Windows, macOS, Linux, Termux.
+    Ждёт нажатия клавиши и возвращает унифицированное имя:
+    - "w", "s", "a", "d" - для стрелок (вверх/вниз/влево/вправо)
+    - "enter" - для Enter
+    - "space" - для Space
+    - символы (str) - для обычных ASCII-символов (например, 'q', '1', ' ')
+    - вызывает KeyboardInterrupt при Ctrl+C
+    Поддерживает: Windows, Linux, macOS, Termux.
     """
-    if os.name == "nt":  # Windows
+    if os.name == "nt":
         return _wait_for_key_windows()
-    else:  # Unix-like: Linux, macOS, Termux
+    else:
         return _wait_for_key_unix()
 
 
-# === Windows ===
 def _wait_for_key_windows():
     import msvcrt
 
     try:
         ch = msvcrt.getch()
-        if ch == b"\x03":
+        if ch == b"\x03":  # Ctrl+C
             raise KeyboardInterrupt()
-        if ch == b"\xe0":
+        if ch == b"\x1b":  # Escape
+            return "esc"
+        if ch == b"\r":  # Enter
+            return "enter"
+        if ch == b" ":  # Space
+            return "space"
+        if ch == b"\xe0":  # Arrows
             ch2 = msvcrt.getch()
             return _map_special_key_windows(ch2)
-        return ch.decode("utf-8").lower()
-    except UnicodeDecodeError:
+        # Other symbol
+        decoded = ch.decode("utf-8", errors="ignore").lower()
+        return decoded if decoded else None
+    except Exception:
         return None
 
 
 def _map_special_key_windows(code):
-    mapping = {
+    return {
         b"H": "w",
         b"P": "s",
         b"K": "a",
         b"M": "d",
-    }
-    return mapping.get(code, "unknown")
+    }.get(code, "unknown")
 
 
 def _wait_for_key_unix():
     import tty
     import termios
-    import select
+    import sys
 
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
     try:
         tty.setraw(fd)
 
-        if select.select([sys.stdin], [], [], None)[0]:
-            ch = sys.stdin.read(1)
-            if ord(ch) == 3:  # Ctrl+C
-                raise KeyboardInterrupt()
+        ch = sys.stdin.read(1)
 
-            if ch == "\x1b":
-                if select.select([sys.stdin], [], [], 0.01)[0]:
-                    next_ch = sys.stdin.read(1)
-                    if next_ch == "[":
-                        if select.select([sys.stdin], [], [], 0.01)[0]:
-                            last_ch = sys.stdin.read(1)
-                            return _map_arrow_key(last_ch)
+        if ch == "\x03":
+            raise KeyboardInterrupt()
+        if ch == "\x1b":
 
-                return "esc"
+            next_ch = sys.stdin.read(1)
+            if next_ch == "[":
+
+                while True:
+                    code = sys.stdin.read(1)
+                    if (
+                        code
+                        in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~"
+                    ):
+                        if code == "A":
+                            return "w"
+                        elif code == "B":
+                            return "s"
+                        elif code == "C":
+                            return "d"
+                        elif code == "D":
+                            return "a"
+                        else:
+                            return None
+            else:
+                return None
+
+        if ch in ("\r", "\n"):
+            return "enter"
+        if ch == " ":
+            return "space"
+        if ord(ch) < 128:
             return ch.lower()
+        return None
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    return None
-
-
-def _map_arrow_key(ch):
-    mapping = {
-        "A": "w",
-        "B": "s",
-        "C": "d",
-        "D": "a",
-    }
-    return mapping.get(ch, "unknown")

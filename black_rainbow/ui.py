@@ -64,5 +64,5 @@ class Menu(_Component):
         elif user_input == "s":
             state["selected"] = (selected + 1) % len(self.choices)
             return None
-        elif user_input == "":
+        elif user_input in ["space", "enter"]:
             return self.choices[selected].action

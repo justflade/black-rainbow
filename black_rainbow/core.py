@@ -46,6 +46,9 @@ class BlackRainbow:
                 print("\nВыход...")
                 break
 
+            if user_input is None:
+                continue
+
             actions = []
             for component in rendered_page._components:
                 result = component.handle_input(user_input, self._state_registry)
