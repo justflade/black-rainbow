@@ -1,6 +1,5 @@
 from typing import List, Literal, Callable, Optional, Any
-
-import uuid
+from .style import Style
 
 
 class _Component:
@@ -39,9 +38,20 @@ class MenuItem:
 
 
 class Menu(_Component):
-    def __init__(self, choices, key):
+    def __init__(self, 
+        key, 
+        choices,
+        selected_style: Style = Style(bg="blue"),
+        unselected_style: Style = Style(),
+        pointer: str = "-> ",
+        unselected_prefix: str = "   ",
+    ):
         super().__init__(key)
         self.choices = choices
+        self.selected_style = selected_style
+        self.unselected_style = unselected_style
+        self.pointer = pointer
+        self.unselected_prefix = unselected_prefix
 
     def render(self, state_registry: dict) -> str:
         state = self._get_state(state_registry)
@@ -49,8 +59,14 @@ class Menu(_Component):
 
         lines = []
         for i, choice in enumerate(self.choices):
-            prefix = "-> " if i == selected else "   "
-            lines.append(prefix + choice.text)
+            prefix = self.pointer if i == selected else self.unselected_prefix
+            full_text = prefix + choice.text
+            styled_text = (
+                self.selected_style(full_text)
+                if i == selected
+                else self.unselected_style(full_text)
+            )
+            lines.append(styled_text)
         return "\n".join(lines)
 
     def handle_input(self, user_input: str, state_registry: dict) -> Optional[Callable]:

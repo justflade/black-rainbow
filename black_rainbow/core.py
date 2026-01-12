@@ -20,7 +20,7 @@ class BlackRainbow:
 
         return decorator
 
-    def render_page(self, page_function) -> Page:
+    def render_page(self, page_function) -> "Page":
         sig = inspect.signature(page_function)
         kwargs = {}
 
