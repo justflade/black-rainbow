@@ -107,11 +107,5 @@ class Style:
         start = "".join(self._parts)
         return f"{start}{text}{_RESET}"
 
-    def __add__(self, other: "Style") -> "Style":
-        """Комбинирует два стиля."""
-        combined = Style()
-        combined._parts = self._parts + other._parts
-        return combined
-
     def __repr__(self) -> str:
         return f"<Style parts={len(self._parts)}>"

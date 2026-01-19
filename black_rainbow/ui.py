@@ -10,7 +10,9 @@ class _Component:
         raise NotImplementedError
 
     def handle_input(
-        self, user_input: str, state_registry
+        self, 
+        user_input: str, 
+        state_registry
     ) -> Optional[Callable[..., Any]]:
         """Обрабатывает ввод. Возвращает действие (callable) или None."""
         return None
@@ -46,6 +48,9 @@ class Menu(_Component):
         pointer: str = "-> ",
         unselected_prefix: str = "   ",
     ):
+        if not choices:
+            raise ValueError("Menu 'choices' must not be empty. Provide at least one MenuItem")
+        
         super().__init__(key)
         self.choices = choices
         self.selected_style = selected_style
