@@ -10,11 +10,8 @@ class _Component:
         raise NotImplementedError
 
     def handle_input(
-        self, 
-        user_input: str, 
-        state_registry
+        self, user_input: str, state_registry
     ) -> Optional[Callable[..., Any]]:
-        """Обрабатывает ввод. Возвращает действие (callable) или None."""
         return None
 
     def _get_state(self, state_registry: dict) -> dict:
@@ -40,8 +37,9 @@ class MenuItem:
 
 
 class Menu(_Component):
-    def __init__(self, 
-        key, 
+    def __init__(
+        self,
+        key,
         choices,
         selected_style: Style = Style(bg="blue"),
         unselected_style: Style = Style(),
@@ -49,8 +47,10 @@ class Menu(_Component):
         unselected_prefix: str = "   ",
     ):
         if not choices:
-            raise ValueError("Menu 'choices' must not be empty. Provide at least one MenuItem")
-        
+            raise ValueError(
+                "Menu 'choices' must not be empty. Provide at least one MenuItem"
+            )
+
         super().__init__(key)
         self.choices = choices
         self.selected_style = selected_style

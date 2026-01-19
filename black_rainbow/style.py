@@ -29,17 +29,17 @@ def _ansi(code: Union[int, str]) -> str:
 
 class Style:
     """
-    Стиль текста с поддержкой ANSI.
+    Text styling with ANSI support.
 
-    Примеры:
+    Examples:
         red = Style(fg="red")
         bold_red = Style(fg="red", bold=True)
         custom = Style(fg=(255, 100, 50))  # RGB
         bg_yellow = Style(bg="yellow")
 
-    Использование:
-        print(red("Ошибка!"))
-        menu_item = MenuItem(bold_red("Важно"), ...)
+    Usage:
+        print(red("Error!"))
+        menu_item = MenuItem(bold_red("Important"), ...)
     """
 
     def __init__(

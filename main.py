@@ -3,12 +3,7 @@ from black_rainbow.ui import Menu, Text, MenuItem
 from black_rainbow.style import Style
 
 
-app = BlackRainbow(
-    initial_storage={
-        "theme": "dark",
-        "autoupdate": True
-    }
-)
+app = BlackRainbow(initial_storage={"theme": "dark", "autoupdate": True})
 
 
 @app.register_page("/")
@@ -22,8 +17,9 @@ def main_page(navigator: Navigator):
                 MenuItem("Настройки", lambda: navigator.go("/settings")),
                 MenuItem("Выход", lambda: exit()),
             ],
-        )
+        ),
     )
+
 
 @app.register_page("/settings")
 def settings_page(navigator: Navigator, storage: dict):
@@ -35,11 +31,11 @@ def settings_page(navigator: Navigator, storage: dict):
             storage["theme"] = "dark"
 
     def toggle_autoupdate():
-        storage["autoupdate"] = not storage["autoupdate"] 
+        storage["autoupdate"] = not storage["autoupdate"]
 
     theme = "Тёмная" if storage["theme"] == "dark" else "Светлая"
     autoupdate = "Вкл" if storage["autoupdate"] else "Выкл"
- 
+
     return Page(
         Text("Настройки"),
         Menu(
@@ -50,10 +46,12 @@ def settings_page(navigator: Navigator, storage: dict):
                 MenuItem(f"Тема: {theme}", toggle_theme),
                 MenuItem("Язык: Русский", lambda: print("Язык изменён на Русский")),
                 MenuItem(f"Автообновление: {autoupdate}", toggle_autoupdate),
-                MenuItem("Логирование: Подробное", lambda: print("Уровень логов изменён")),
+                MenuItem(
+                    "Логирование: Подробное", lambda: print("Уровень логов изменён")
+                ),
                 MenuItem("Назад", lambda: navigator.back()),
             ],
-        )
+        ),
     )
 
 

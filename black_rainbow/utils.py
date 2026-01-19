@@ -4,13 +4,14 @@ import os
 
 def wait_for_key():
     """
-    Ждёт нажатия клавиши и возвращает унифицированное имя:
-    - "w", "s", "a", "d" - для стрелок (вверх/вниз/влево/вправо)
-    - "enter" - для Enter
-    - "space" - для Space
-    - символы (str) - для обычных ASCII-символов (например, 'q', '1', ' ')
-    - вызывает KeyboardInterrupt при Ctrl+C
-    Поддерживает: Windows, Linux, macOS, Termux.
+    Waits for a keypress and returns a normalized key name:
+    - "w", "s", "a", "d" — for arrow keys (up/down/left/right)
+    - "enter" — for Enter
+    - "space" — for Space
+    - regular ASCII characters (str) — for normal printable characters (e.g., 'q', '1', ' ')
+    - raises KeyboardInterrupt on Ctrl+C
+
+    Supports: Windows, Linux, macOS, Termux.
     """
     if os.name == "nt":
         return _wait_for_key_windows()
