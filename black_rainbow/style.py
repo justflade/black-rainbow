@@ -101,7 +101,7 @@ class Style:
             raise TypeError("Color must be str, int, or (r, g, b) tuple")
 
     def __call__(self, text: str) -> str:
-        """Применяет стиль к тексту."""
+        """Apply the style to the provided text."""
         if not self._parts:
             return text
         start = "".join(self._parts)
