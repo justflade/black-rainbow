@@ -30,7 +30,7 @@ class _Component:
         return state_registry[self._key]
 
 
-@dataclass(frozen=True)
+@dataclass()
 class Text(_Component):
     text: str
 
@@ -43,7 +43,7 @@ class Text(_Component):
         return self.text
 
 
-@dataclass(frozen=True)
+@dataclass()
 class MenuItem:
     text: str
     action: Action
